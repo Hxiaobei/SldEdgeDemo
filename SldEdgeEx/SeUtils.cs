@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 using SolidEdgeFramework;
 
-
-
 namespace SldEdgeEx {
     public class SeUtils {
         static Application _seApp;

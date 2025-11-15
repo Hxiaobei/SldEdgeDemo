@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Drawing;
 
 using SolidEdgeAssembly;
 using SolidEdgeDraft;
@@ -17,19 +19,12 @@ using SolidEdgeFrameworkSupport;
 using SolidEdgeGeometry;
 using SolidEdgePart;
 
-
-using Body = SolidEdgeGeometry.Body;
-using SeApp = SolidEdgeFramework.Application;
-using SeObjType = SolidEdgeFramework.ObjectType;
 using SeConst = SolidEdgeConstants;
-
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace SldEdgeDemo {
     public static class SeExample {
         public static SolidEdgeDocument activeDoc;
-        public static SeApp SeApp;
+        public static SolidEdgeFramework.Application SeApp;
 
         #region Head
         public static SolidEdgeDocument GetActiveDoc() {
@@ -86,6 +81,15 @@ namespace SldEdgeDemo {
             }
         }
 
+        /// <summary>
+        /// Highlights all edges of the flat pattern in the specified Solid Edge document using the given color.
+        /// </summary>
+        /// <remarks>If the document does not contain a flat pattern model, no highlighting is performed
+        /// and a message is displayed. The method replaces any existing highlights in the document's highlight
+        /// set.</remarks>
+        /// <param name="activeDoc">The SolidEdgeDocument instance containing the flat pattern to highlight. Must not be null and should contain
+        /// at least one flat pattern model.</param>
+        /// <param name="color">The color to use for highlighting the edges. If set to the default value, Orchid is used.</param>
         public static void HighlightSet_Flat(this SolidEdgeDocument activeDoc, Color color) {
             HighlightSet objHS;
 
@@ -120,9 +124,9 @@ namespace SldEdgeDemo {
             var msg = "";
             try {
                 InterpartLinks interPartLinks = activeDoc.InterpartLinks();
-                Reference reference = (Reference)interPartLinks.Item(1);
+                Reference reference = (Reference)interPartLinks.AsItems<InterpartLink>().First();//InterpartLink
 
-                if(reference != null) {
+                if (reference != null) {
                     var referenObj = reference.Parent;
                     dynamic theObj = reference.Object;
                     msg += "\r\n theObjType " + (SeConst.GNTTypePropertyConstants)theObj.Type;
@@ -427,7 +431,7 @@ namespace SldEdgeDemo {
             var item = selectSet.Item(1);
             var itemType = item.GetType();
             var objectType = itemType.InvokeMember("Type", System.Reflection.BindingFlags.GetProperty, null, item, null);
-            var obType = (SeObjType)objectType;
+            var obType = (ObjectType)objectType;
             //Debug.Print(seleView.Name);
             //Debug.Print(obType.ToString());
 

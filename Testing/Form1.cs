@@ -1,31 +1,30 @@
-﻿using SolidEdgeFrameworkSupport;
-using SolidEdgeFramework;
-using SolidEdgePart;
+﻿using SldEdgeDemo;
+using SldEdgeDemo.Extensions;
+using SldEdgeEx;
 using SolidEdgeAssembly;
 using SolidEdgeDraft;
+using SolidEdgeFramework;
+using SolidEdgeFrameworkSupport;
 using SolidEdgeGeometry;
-
-using seConst = SolidEdgeConstants;
-
+using SolidEdgePart;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-
-using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+using seConst = SolidEdgeConstants;
 
-using SldEdgeEx;
-using SldEdgeDemo;
-
-namespace ColorPalette_Winform {
-    public partial class Form1 : Form {
+namespace ColorPalette_Winform
+{
+    public partial class Form1 : Form
+    {
         public Form1() {
             InitializeComponent();
         }
         private void Form1_Load(object sender, EventArgs e) {
             LoadToolTip();
-           SeExample.SeApp = SeUtils.Se;
-            if(SeExample.SeApp == null) {
+            SeExample.SeApp = SeUtils.Se;
+            if (SeExample.SeApp == null) {
                 MessageBox.Show("请先启动solid edge程序");
                 Close();
             }
@@ -48,7 +47,7 @@ namespace ColorPalette_Winform {
             panelColor.BackColor = color;
         }
         private bool CheckColorCode(int numCode) {
-            if(numCode >= 0 && numCode <= 255) return true;
+            if (numCode >= 0 && numCode <= 255) return true;
             return false;
         }
 
@@ -72,14 +71,14 @@ namespace ColorPalette_Winform {
         #region Load{10-13}
 
         private void Part_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
-            if(SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igPartDocument
-                &&SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igSheetMetalDocument) {
-                txbox_Msg.Text =SeExample.activeDoc.Type + " 环境不对";
+            if (SeExample.GetActiveDoc() == null) return;
+            if (SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igPartDocument
+                && SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igSheetMetalDocument) {
+                txbox_Msg.Text = SeExample.activeDoc.Type + " 环境不对";
                 return;
             }
             oopc_tbox.Text = "GetFeatureData";
-            switch(oopc_tbox.Text) {
+            switch (oopc_tbox.Text) {
                 case "GetFeatureData":
                     GetFeatureData(SeExample.activeDoc);
                     break;
@@ -92,12 +91,12 @@ namespace ColorPalette_Winform {
 
         }
         private void Assembly_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
-            if(SeExample.activeDoc.Type != DocumentTypeConstants.igAssemblyDocument) {
-                txbox_Msg.Text =SeExample.activeDoc.Type + " 环境不对";
+            if (SeExample.GetActiveDoc() == null) return;
+            if (SeExample.activeDoc.Type != DocumentTypeConstants.igAssemblyDocument) {
+                txbox_Msg.Text = SeExample.activeDoc.Type + " 环境不对";
                 return;
             }
-            var AssemDoc =SeExample.activeDoc as AssemblyDocument;
+            var AssemDoc = SeExample.activeDoc as AssemblyDocument;
 
             var startTime = DateTime.UtcNow;
 
@@ -105,22 +104,22 @@ namespace ColorPalette_Winform {
             txbox_Msg.AppendText("\r\n" + absTime.TotalMilliseconds);
         }
         private void Draft_Clict(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
-            if(SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igDraftDocument) {
-                txbox_Msg.Text =SeExample.activeDoc.Type + " 环境不对";
+            if (SeExample.GetActiveDoc() == null) return;
+            if (SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igDraftDocument) {
+                txbox_Msg.Text = SeExample.activeDoc.Type + " 环境不对";
                 return;
             }
 
             var sketchs = (SeExample.activeDoc as dynamic).ActiveSketch;
 
-            if(sketchs == null) return;
+            if (sketchs == null) return;
 
 
         }
         private void AllDocument(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
-            txbox_Msg.Text = "当前环境  ：" +SeExample.activeDoc.Type;
-            switch(SeExample.activeDoc.Type) {
+            if (SeExample.GetActiveDoc() == null) return;
+            txbox_Msg.Text = "当前环境  ：" + SeExample.activeDoc.Type;
+            switch (SeExample.activeDoc.Type) {
                 case SolidEdgeFramework.DocumentTypeConstants.igAssemblyDocument:
                     break;
                 case SolidEdgeFramework.DocumentTypeConstants.igPartDocument:
@@ -142,14 +141,14 @@ namespace ColorPalette_Winform {
         static FaceStyles fesyls = null;
         static FaceStyle fesyl = null;
         private void ButEnter_Click(object sender, EventArgs e) {
-           SeExample.GetActiveDoc();
+            SeExample.GetActiveDoc();
 
-            if(fesyls == null &&SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igDraftDocument) {
+            if (fesyls == null && SeExample.activeDoc.Type != SolidEdgeFramework.DocumentTypeConstants.igDraftDocument) {
                 fesyls = (SeExample.activeDoc as dynamic).FaceStyles;
-                if(fesyls == null) return;
+                if (fesyls == null) return;
             }
 
-            seNewCmd =SeExample.SeApp.CreateCommand((int)seConst.seCmdFlag.seNoDeactivate);
+            seNewCmd = SeExample.SeApp.CreateCommand((int)seConst.seCmdFlag.seNoDeactivate);
             seNewCmd.Start();
 
             seMouse = seNewCmd.Mouse;
@@ -158,7 +157,7 @@ namespace ColorPalette_Winform {
             seMouse.WindowTypes = 1;
             seMouse.EnabledMove = true;
 
-            foreach(var item in lstLocate.SelectedItems) {
+            foreach (var item in lstLocate.SelectedItems) {
                 Enum.TryParse(item.ToString(), out seConst.seLocateFilterConstants result);
                 seMouse.AddToLocateFilter((int)result);
             }
@@ -169,13 +168,13 @@ namespace ColorPalette_Winform {
         private void Clear_Click(object sender, EventArgs e) {
             lstLocate.ClearSelected();
             try {
-                if(seMouse == null) return;
+                if (seMouse == null) return;
                 seMouse.MouseDown -= SeMouse_MouseDown;
                 seMouse = null;
                 seNewCmd.Done = true;
                 seNewCmd = null;
                 //Marshal.FinalReleaseComObject(seNewCmd);
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 txbox_Msg.AppendText($"{ex.Message}");
             }
         }
@@ -183,15 +182,15 @@ namespace ColorPalette_Winform {
         Command seNewCmd;
         Mouse seMouse;
         private void SeMouse_MouseDown(short sButton, short sShift, double dX, double dY, double dZ, object pWindowDispatch, int lKeyPointType, object pGraphicDispatch) {
-            if(pGraphicDispatch != null) {
+            if (pGraphicDispatch != null) {
                 fesyl = fesyls.Add("", "");
-                if(fesyl == null) return;
+                if (fesyl == null) return;
                 fesyl.SetDiffuse((float)color.R / 255, (float)color.G / 255, (float)color.B / 255);
                 fesyl.SetAmbient((float)color.R / 255, (float)color.G / 255, (float)color.B / 255);
                 fesyl.Opacity = (float)color.A / 255;//透明度设置
                 try {
                     GetSeObjectType(pGraphicDispatch);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Invoke(new Action(() => txbox_Msg.AppendText($"{ex.Message}")));
                     //Invoke(new Action(() => txbox_Msg.AppendText($"{ex.StackTrace}")));
                 }
@@ -200,7 +199,7 @@ namespace ColorPalette_Winform {
 
         int GetSeObjectType(object pGraphicDispatch, int root = 0) {
             var seObjType = (pGraphicDispatch as dynamic).Type();
-            switch((int)seObjType) {
+            switch ((int)seObjType) {
                 //igBody
                 case 167551091:
                     Body sebody = pGraphicDispatch as Body;
@@ -221,18 +220,18 @@ namespace ColorPalette_Winform {
                     Reference reference = pGraphicDispatch as Reference;
                     object referObj = reference.Object;
                     var setype = GetSeObjectType(referObj, root++);
-                    if(root != 0) break;
+                    if (root != 0) break;
                     var boundSubOcc = Array.CreateInstance(typeof(object), 0);
                     reference.GetOccurrencesInPath(out _, out _, out var NumBoundSub, ref boundSubOcc);
-                    if(NumBoundSub == 0) break;
-                    if(!(boundSubOcc.GetValue(0) is SubOccurrence subOcc)) break;
+                    if (NumBoundSub == 0) break;
+                    if (!(boundSubOcc.GetValue(0) is SubOccurrence subOcc)) break;
                     subOcc.FaceStyle = fesyl;
 
                     break;
                 //Occ->part
                 case -1879909117:
                     var occ = pGraphicDispatch as Occurrence;
-                    if(root == 0) occ.FaceStyle = fesyl;
+                    if (root == 0) occ.FaceStyle = fesyl;
                     break;
                 default:
                     Invoke(new Action(() => txbox_Msg.AppendText($"\r\n{seObjType}")));
@@ -244,30 +243,30 @@ namespace ColorPalette_Winform {
 
         void GetGeometryData(Edge edge) {
             var geometry = edge.Geometry;
-            if(geometry is Line line) {
+            if (geometry is Line line) {
                 edge.GetParamExtents(out double min, out double max);
                 edge.GetLengthAtParam(min, max, out double length);
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n line:{length * 1e3}")));
-            } else if(geometry is Circle circle) {
+            } else if (geometry is Circle circle) {
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n Radius:{circle.Radius * 1e3}")));
-            } else if(geometry is Ellipse ellipse) {
+            } else if (geometry is Ellipse ellipse) {
                 edge.GetParamExtents(out double min, out double max);
                 edge.GetLengthAtParam(min, max, out double length);
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n ellipse:{length}")));
-            } else if(geometry is Cone cone) {
+            } else if (geometry is Cone cone) {
                 edge.GetParamExtents(out double min, out double max);
                 edge.GetLengthAtParam(min, max, out double length);
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n cone:{length}")));
-            } else if(geometry is BSplineCurve b_Spline) {
+            } else if (geometry is BSplineCurve b_Spline) {
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n B-Spline")));
-            } else if(geometry is PLine pLine) {
+            } else if (geometry is PLine pLine) {
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n pLine")));
-            } else if(geometry is ParamBSplineCurve b_Spline2d) {
+            } else if (geometry is ParamBSplineCurve b_Spline2d) {
                 Invoke(new Action(() => txbox_Msg.AppendText($"\r\n 2dB-Spline")));
 
             }
 
-            if(geometry is Curve curve) Invoke(new Action(() => txbox_Msg.AppendText($"\r\n curve")));
+            if (geometry is Curve curve) Invoke(new Action(() => txbox_Msg.AppendText($"\r\n curve")));
 
         }
 
@@ -275,12 +274,12 @@ namespace ColorPalette_Winform {
 
         #region Command
         private void but14_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
             var sketchs = (SeExample.activeDoc as dynamic).ActiveSketch;
-            if(sketchs == null) return;
+            if (sketchs == null) return;
         }
         private void But15_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
             try {
                 SolidEdgeDocument solidEdgeDocument = SeUtils.Se.GetActiveDoc();
                 dynamic dyDocment = solidEdgeDocument;
@@ -288,37 +287,37 @@ namespace ColorPalette_Winform {
                 dyDocment.GetGlobalParameter(SheetMetalGlobalConstants.seSheetMetalGlobalMaterialThickness, out value);
 
                 //dyDocment.SetGlobalParameter(SmGloCons.seSheetMetalGlobalMaterialThickness, 2.5e-3);
-            } catch(Exception) {
+            } catch (Exception) {
 
                 return;
             }
         }
         private void But16_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
 
         }
         private void But17_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
 
         }
         private void But18_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
             FeatureGroups featGroups = (SeExample.activeDoc as dynamic).Models.Item(1).FeatureGroups;
-            foreach(FeatureGroup featGroup in featGroups) {
+            foreach (FeatureGroup featGroup in featGroups) {
                 Debug.Print(featGroup.Name);
             }
 
             List<object> listObj = new List<object>();
 
             EdgebarFeatures edbFeatures = (SeExample.activeDoc as dynamic).DesignEdgebarFeatures;
-            foreach(dynamic objFeat in edbFeatures) {
+            foreach (dynamic objFeat in edbFeatures) {
                 try {
-                    if(objFeat.ModelingModeType == 1) { continue; }
-                } catch(Exception) {
+                    if (objFeat.ModelingModeType == 1) { continue; }
+                } catch (Exception) {
                     continue;
                 }
 
-                if(objFeat.Type != (int)ObjectType.igRefPlane) {
+                if (objFeat.Type != (int)ObjectType.igRefPlane) {
                     listObj.Add(objFeat);
                 }
             }
@@ -328,16 +327,16 @@ namespace ColorPalette_Winform {
             FeatureGroup objFG = featGroups.AddFeatureGroupsBySet(2, objFeats);
         }
         private void But19_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
 
         }
         private void but20_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
 
 
         }
         private void but21_Click(object sender, EventArgs e) {
-            if(SeExample.GetActiveDoc() == null) return;
+            if (SeExample.GetActiveDoc() == null) return;
 
         }
 
@@ -346,10 +345,12 @@ namespace ColorPalette_Winform {
         #region Feature
         void GetFeatureData(SolidEdgeDocument activeDoc) {
             EdgebarFeatures edgebarFeatures = activeDoc.EdgebarFeatures();
-            for(int i = edgebarFeatures.Count; i > 0; i--) {
-                dynamic Feat = edgebarFeatures.Item(i);
-                //if (Feat.ModelingModeType == 2 && (Feat.Type != 732824896)) selectSet.Add(Feat);
-                txbox_Msg.AppendText($"\r\n{Feat.Name}  {Feat.Type}  {Feat.ModelingModeType}");
+
+            foreach (var feat in edgebarFeatures) {
+                var featType = SeFeatEx.GetType(feat);
+                var modelingModeType = SeFeatEx.GetModelingModeType(feat);
+                var featName = SeFeatEx.GetName(feat);
+                txbox_Msg.AppendText($"\r\n{featName}->{featType}->{modelingModeType}");
             }
         }
 
