@@ -1,0 +1,1 @@
+Model(ConstructionModel)->Body 获取实体可能会出现内存错误，建议用Try包裹一下
